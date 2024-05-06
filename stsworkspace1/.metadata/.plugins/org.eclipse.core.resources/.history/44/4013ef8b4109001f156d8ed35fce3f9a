@@ -1,0 +1,131 @@
+package com.abc.driverservice.test;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import com.abc.driverservice.entity.Driver;
+import com.abc.driverservice.exception.ResourceNotFoundException;
+import com.abc.driverservice.repository.AddressRepository;
+import com.abc.driverservice.repository.DriverRepository;
+import com.abc.driverservice.service.DriverServiceImpl;
+
+@ExtendWith(MockitoExtension.class)
+public class DriverServiceTest {
+
+    @Mock
+    private DriverRepository driverRepository;
+
+    @Mock
+    private AddressRepository addressRepository;
+
+    @InjectMocks
+    private DriverServiceImpl driverService;
+
+    @Test
+    public void testInsertDriver() {
+        Driver driver = new Driver();
+        when(driverRepository.save(driver)).thenReturn(driver);
+
+        Driver result = driverService.insertDriver(driver);
+
+        assertNotNull(result);
+        assertEquals(driver, result);
+    }
+
+    @Test
+    public void testViewDriverById_ValidId() {
+        int driverId = 1;
+        Driver driver = new Driver();
+        driver.setUserId(driverId);
+
+        when(driverRepository.findById(driverId)).thenReturn(Optional.of(driver));
+
+        Driver result = driverService.viewDriverById(driverId);
+
+        assertNotNull(result);
+        assertEquals(driverId, result.getUserId());
+    }
+
+    @Test
+    public void testViewDriverById_InvalidId() {
+        int driverId = 1;
+
+        when(driverRepository.findById(driverId)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> driverService.viewDriverById(driverId));
+    }
+
+    @Test
+    public void testUpdateDriver() {
+        Driver driver = new Driver();
+        driver.setUserId(1);
+
+        when(driverRepository.findById(driver.getUserId())).thenReturn(Optional.of(driver));
+        when(driverRepository.save(driver)).thenReturn(driver);
+
+        Driver result = driverService.updateDriver(driver);
+
+        assertNotNull(result);
+        assertEquals(driver.getUserId(), result.getUserId());
+    }
+
+    @Test
+    public void testUpdateDriver_NotFound() {
+        Driver driver = new Driver();
+        driver.setUserId(1);
+
+        when(driverRepository.findById(driver.getUserId())).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> driverService.updateDriver(driver));
+    }
+
+    @Test
+    public void testDeleteDriverById() {
+        int driverId = 1;
+        Driver driver = new Driver();
+        driver.setUserId(driverId);
+
+        when(driverRepository.findById(driverId)).thenReturn(Optional.of(driver));
+
+        String result = driverService.deleteDriverById(driverId);
+
+        assertEquals("Driver Deleted successfully", result);
+        verify(addressRepository, times(1)).delete(driver.getAddress());
+        verify(driverRepository, times(1)).delete(driver);
+    }
+
+    @Test
+    public void testDeleteDriverById_NotFound() {
+        int driverId = 1;
+
+        when(driverRepository.findById(driverId)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> driverService.deleteDriverById(driverId));
+        verifyNoInteractions(addressRepository);
+        verifyNoInteractions(driverRepository);
+    }
+
+    @Test
+    public void testGetAllDrivers() {
+        List<Driver> drivers = new ArrayList<>();
+        drivers.add(new Driver());
+        drivers.add(new Driver());
+
+        when(driverRepository.findAll()).thenReturn(drivers);
+
+        List<Driver> result = driverService.getAllDrivers();
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
+    }
+}

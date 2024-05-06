@@ -1,0 +1,49 @@
+package com.abc.customerservice.service;
+
+import com.abc.customerservice.entity.Customer;
+import com.abc.customerservice.exception.ResourceNotFoundException;
+import com.abc.customerservice.repository.CustomerRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class CustomerServiceImpl implements CustomerService {
+
+    @Autowired
+    private CustomerRepository customerRepository;
+
+    @Override
+    public List<Customer> getAllCustomers() {
+        return customerRepository.findAll();
+    }
+
+    @Override
+    public Customer getCustomerById(int customerId) {
+        return customerRepository.findById(customerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id: " + customerId));
+    }
+
+    @Override
+    public Customer createCustomer(Customer customer) {
+        return customerRepository.save(customer);
+    }
+
+    @Override
+    public Customer updateCustomer(int customerId, Customer customer) {
+        if (!customerRepository.existsById(customerId)) {
+            throw new ResourceNotFoundException("Customer not found with id: " + customerId);
+        }
+        customer.setCustomerId(customerId);
+        return customerRepository.save(customer);
+    }
+
+    @Override
+    public void deleteCustomer(int customerId) {
+        if (!customerRepository.existsById(customerId)) {
+            throw new ResourceNotFoundException("Customer not found with id: " + customerId);
+        }
+        customerRepository.deleteById(customerId);
+    }
+}

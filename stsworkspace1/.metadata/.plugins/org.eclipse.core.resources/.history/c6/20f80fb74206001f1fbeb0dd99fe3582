@@ -1,0 +1,5 @@
+package com.abc.adminservice.controller;
+
+public class AdminController {
+
+}

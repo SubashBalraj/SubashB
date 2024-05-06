@@ -1,0 +1,16 @@
+package com.abc.cabservice.service;
+
+import java.util.List;
+
+import com.abc.cabservice.entity.Cab;
+
+public interface CabService {
+	
+    Cab getCabById(Integer cabId);
+    List<Cab> getAllCabs();
+    Cab addCab(Cab cab);
+    Cab updateCab(Integer cabId, Cab cab);
+    void deleteCab(Integer cabId);
+    
+}
+

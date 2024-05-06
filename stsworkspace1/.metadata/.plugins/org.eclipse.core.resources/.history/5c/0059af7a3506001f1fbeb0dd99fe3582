@@ -1,0 +1,5 @@
+package com.abc.adminservice.exception;
+
+public class AdminException {
+
+}

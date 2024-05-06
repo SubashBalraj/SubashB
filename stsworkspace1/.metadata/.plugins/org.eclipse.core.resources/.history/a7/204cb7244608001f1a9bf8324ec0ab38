@@ -1,0 +1,57 @@
+package com.abc.driverservice.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.abc.driverservice.entity.Driver;
+import com.abc.driverservice.repository.DriverRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class DriverServiceImpl implements DriverService {
+
+    @Autowired
+    private DriverRepository driverRepository;
+
+    @Override
+    public Driver getDriverById(int driverId) {
+        Optional<Driver> driverOptional = driverRepository.findById(driverId);
+        return driverOptional.orElse(null);
+    }
+
+    @Override
+    public List<Driver> getAllDrivers() {
+        return driverRepository.findAll();
+    }
+
+    @Override
+    public Driver addDriver(Driver driver) {
+        return driverRepository.save(driver);
+    }
+
+    @Override
+    public Driver updateDriver(int driverId, Driver updatedDriver) {
+        Optional<Driver> existingDriverOptional = driverRepository.findById(driverId);
+        if (existingDriverOptional.isPresent()) {
+            Driver existingDriver = existingDriverOptional.get();
+            existingDriver.setLicenseNo(updatedDriver.getLicenseNo());
+            existingDriver.setRating(updatedDriver.getRating());
+            existingDriver.setAvailableCab(updatedDriver.getAvailableCab());
+            existingDriver.setTripBooking(updatedDriver.getTripBooking());
+           
+            existingDriver.setAvailableCab(updatedDriver.getAvailableCab());
+            return driverRepository.save(existingDriver);
+        } else {
+            return null; 
+        }
+    }
+
+    @Override
+    public void deleteDriver(int driverId) {
+        driverRepository.deleteById(driverId);
+    }
+
+	
+}

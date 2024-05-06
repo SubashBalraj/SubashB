@@ -1,0 +1,38 @@
+package com.abc.tripbookingservice.entity;
+
+import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name="tripbooking_tbl")
+public class TripBooking {
+	
+	@Id
+    @Column(length=5)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private int bookingID;
+	
+	@Column(length=10)
+    private int driverID;
+	
+	@Column(length=10)
+    private int customerID;
+	
+	@Column(length=50)
+    private String driver;
+	
+    private String fromLocation;
+    private String toLocation;
+    private LocalDateTime fromDateTime;
+    private LocalDateTime toDateTime;
+    private boolean status;
+    private double distanceInKm;
+    private double bill;
+   
+}

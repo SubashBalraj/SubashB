@@ -1,0 +1,5 @@
+package com.abc.tripbookingservice.service;
+
+public class TripBookingService {
+
+}

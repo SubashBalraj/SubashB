@@ -1,0 +1,77 @@
+package com.abc.customerservice.test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import com.abc.customerservice.entity.Customer;
+import com.abc.customerservice.repository.CustomerRepository;
+import com.abc.customerservice.service.CustomerServiceImpl;
+
+@SpringBootTest(properties = "eureka.client.enabled=false")
+public class CustomerServiceTest {
+
+    @InjectMocks
+    private CustomerServiceImpl customerService;
+
+    @Mock
+    private CustomerRepository customerRepository;
+
+    @Test
+    public void testGetAllCustomers() {
+        Customer customer1 = new Customer();
+        customer1.setCustomerId(1);
+        customer1.setName("Prem");
+
+        Customer customer2 = new Customer();
+        customer2.setCustomerId(2);
+        customer2.setName("Prabhu");
+
+        List<Customer> customers = new ArrayList<>();
+        customers.add(customer1);
+        customers.add(customer2);
+
+        when(customerRepository.findAll()).thenReturn(customers);
+
+        List<Customer> customerList = customerService.getAllCustomers();
+        assertEquals(2, customerList.size());
+    }
+
+    @Test
+    void testDeleteCustomer() {
+        Customer customer = new Customer();
+        customer.setCustomerId(1);
+        customer.setName("Prem");
+
+        when(customerRepository.findById(1)).thenReturn(Optional.of(customer));
+
+        doNothing().when(customerRepository).deleteById(1);
+
+        customerService.deleteCustomer(1);
+
+        verify(customerRepository, times(1)).findById(1);
+        verify(customerRepository, times(1)).deleteById(1);
+    }
+
+    @Test
+    void testDeleteCustomerWithException() {
+        when(customerRepository.findById(5)).thenReturn(Optional.empty());
+
+        assertThrows(IllegalArgumentException.class, () -> customerService.deleteCustomer(5));
+
+        verify(customerRepository, times(0)).deleteById(5);
+    }
+}
+

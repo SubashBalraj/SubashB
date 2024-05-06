@@ -1,0 +1,5 @@
+package com.abc.customerservice.model;
+
+public class TripBooking {
+
+}

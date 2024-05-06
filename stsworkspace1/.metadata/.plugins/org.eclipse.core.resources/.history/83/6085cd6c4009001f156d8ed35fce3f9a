@@ -1,0 +1,77 @@
+package com.abc.adminservice.test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import com.abc.adminservice.entity.Admin;
+import com.abc.adminservice.repository.AdminRepository;
+import com.abc.adminservice.service.AdminServiceImpl;
+
+@SpringBootTest(properties = "eureka.client.enabled=false")
+public class AdminServiceTest {
+
+    @InjectMocks
+    private AdminServiceImpl adminService;
+
+    @Mock
+    private AdminRepository adminRepository;
+
+    @Test
+    public void testGetAllAdmins() {
+        Admin admin1 = new Admin();
+        admin1.setAdminId(1);
+        admin1.setUsername("admin1");
+
+        Admin admin2 = new Admin();
+        admin2.setAdminId(2);
+        admin2.setUsername("admin2");
+
+        List<Admin> admins = new ArrayList<>();
+        admins.add(admin1);
+        admins.add(admin2);
+
+        when(adminRepository.findAll()).thenReturn(admins);
+
+        List<Admin> adminList = adminService.getAllAdmins();
+        assertEquals(2, adminList.size());
+    }
+
+    @Test
+    void testDeleteAdmin() {
+        Admin admin = new Admin();
+        admin.setAdminId(1);
+        admin.setUsername("admin");
+
+        when(adminRepository.findById(1)).thenReturn(Optional.of(admin));
+
+        doNothing().when(adminRepository).deleteById(1);
+
+        adminService.deleteAdmin(1);
+
+        verify(adminRepository, times(1)).findById(1);
+        verify(adminRepository, times(1)).deleteById(1);
+    }
+
+    @Test
+    void testDeleteAdminWithException() {
+        when(adminRepository.findById(5)).thenReturn(Optional.empty());
+
+        assertThrows(IllegalArgumentException.class, () -> adminService.deleteAdmin(5));
+
+        verify(adminRepository, times(0)).deleteById(5);
+    }
+}
+

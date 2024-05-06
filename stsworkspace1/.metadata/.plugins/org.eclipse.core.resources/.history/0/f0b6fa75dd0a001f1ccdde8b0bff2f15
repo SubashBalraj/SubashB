@@ -1,0 +1,5 @@
+package com.abc.adminservice.model;
+
+public class CustomerDetails {
+
+}

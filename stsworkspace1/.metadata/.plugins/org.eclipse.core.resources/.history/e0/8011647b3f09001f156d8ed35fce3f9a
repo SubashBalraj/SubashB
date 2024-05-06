@@ -1,0 +1,54 @@
+package com.abc.adminservice.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.abc.adminservice.entity.Admin;
+import com.abc.adminservice.repository.AdminRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class AdminServiceImpl implements AdminService {
+
+    @Autowired
+    private AdminRepository adminRepository;
+
+    @Override
+    public Admin getAdminById(int adminId) {
+        Optional<Admin> adminOptional = adminRepository.findById(adminId);
+        return adminOptional.orElse(null);
+    }
+
+    @Override
+    public List<Admin> getAllAdmins() {
+        return adminRepository.findAll();
+    }
+
+    @Override
+    public Admin addAdmin(Admin admin) {
+        return adminRepository.save(admin);
+    }
+
+    @Override
+    public Admin updateAdmin(int adminId, Admin updatedAdmin) {
+        Optional<Admin> existingAdminOptional = adminRepository.findById(adminId);
+        if (existingAdminOptional.isPresent()) {
+            Admin existingAdmin = existingAdminOptional.get();
+            existingAdmin.setUsername(updatedAdmin.getUsername());
+            existingAdmin.setPassword(updatedAdmin.getPassword());
+            return adminRepository.save(existingAdmin);
+        } else {
+            return null; 
+        }
+    }
+
+    @Override
+    public void deleteAdmin(int adminId) {
+        adminRepository.deleteById(adminId);
+    }
+
+	
+	}
+

@@ -1,0 +1,91 @@
+package com.abc.tripbookingservice.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.abc.tripbookingservice.entity.TripBooking;
+import com.abc.tripbookingservice.model.TripBookingResponse;
+import com.abc.tripbookingservice.service.TripBookingService;
+
+import jakarta.validation.Valid;
+
+@RestController
+@RequestMapping("/booking")
+public class TripBookingController {
+	
+
+	@Autowired
+	private TripBookingService bookingService;
+	
+	@GetMapping("/all")
+	public List<TripBooking> fetchAllBookings() {
+		List<TripBooking> booking = bookingService.getAllBookings();
+		return booking;
+
+	}
+	@GetMapping("/{customer_id}/trips-by-customer")
+	public List<TripBooking> getAllTripsByCustomer(@PathVariable("customer_id") int customerId) {
+		List<TripBooking> booking = bookingService.getAllBookingsByCustomer(customerId);
+		return booking;
+
+	}
+	@PostMapping("/save")
+	public ResponseEntity<TripBooking> addBooking(@Valid @RequestBody TripBookingResponse saveBooking) {
+		TripBooking bookingObj = new TripBooking();
+
+		bookingObj.setCustomerId(saveBooking.getCustomerId());
+		bookingObj.setDriverId(saveBooking.getDriverId());
+		bookingObj.setSource(saveBooking.getSource());
+		bookingObj.setDestination(saveBooking.getDestination());
+		bookingObj.setFromDate(saveBooking.getFromDate());
+		bookingObj.setTodate(saveBooking.getTodate());
+		bookingObj.setBookingStatus(saveBooking.getBookingStatus());
+		bookingObj.setPrice(saveBooking.getPrice());
+
+		
+		TripBooking booking = bookingService.SaveBooking(bookingObj);
+		return new ResponseEntity<>(booking, HttpStatus.CREATED);
+	}
+	
+	@GetMapping("/{id}")
+	public ResponseEntity<TripBooking> fetchBookingDetails(@PathVariable("id") int bookingId) {
+		TripBooking booking = bookingService.getBookingById(bookingId);
+		return new ResponseEntity<>(booking, HttpStatus.OK);
+	}
+	
+	@PutMapping("/{id}")
+	public ResponseEntity<String> editBooking(@PathVariable("id") int bookingId, @RequestBody TripBookingResponse booking ) {
+		TripBooking bookingObj = new TripBooking();
+		bookingObj.setCustomerId(booking.getCustomerId());
+		bookingObj.setBookingId(bookingId);
+		bookingObj.setSource(booking.getSource());
+		bookingObj.setDestination(booking.getDestination());
+		bookingObj.setBookingStatus(booking.getBookingStatus());
+		bookingObj.setDriverId(booking.getDriverId());
+		bookingObj.setFromDate(booking.getFromDate());
+		bookingObj.setTodate(booking.getTodate());
+		bookingObj.setPrice(booking.getPrice());
+		bookingService.updateDriver(bookingId, bookingObj);
+		return new ResponseEntity<>("updated succesfully", HttpStatus.CREATED);
+
+	}
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> deleteBooking(@PathVariable("id") int bookingId) {
+		bookingService.deleteBooking(bookingId);
+		ResponseEntity<Void> responseEntity = new ResponseEntity<>(HttpStatus.OK);
+		return responseEntity;
+	}
+
+}

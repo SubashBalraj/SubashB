@@ -1,0 +1,87 @@
+package com.abc.tripbookingservice.model;
+
+import java.time.LocalDateTime;
+
+public class TripBookingResponse {
+	
+	private int bookingID;
+    private int driverID;
+    private int customerID;
+    private String driver;
+    private String fromLocation;
+    private String toLocation;
+    private LocalDateTime fromDateTime;
+    private LocalDateTime toDateTime;
+    private boolean status;
+    private double distanceInKm;
+    
+    
+    public int getBookingID() {
+		return bookingID;
+	}
+	public void setBookingID(int bookingID) {
+		this.bookingID = bookingID;
+	}
+	public int getDriverID() {
+		return driverID;
+	}
+	public void setDriverID(int driverID) {
+		this.driverID = driverID;
+	}
+	public int getCustomerID() {
+		return customerID;
+	}
+	public void setCustomerID(int customerID) {
+		this.customerID = customerID;
+	}
+	public String getDriver() {
+		return driver;
+	}
+	public void setDriver(String driver) {
+		this.driver = driver;
+	}
+	public String getFromLocation() {
+		return fromLocation;
+	}
+	public void setFromLocation(String fromLocation) {
+		this.fromLocation = fromLocation;
+	}
+	public String getToLocation() {
+		return toLocation;
+	}
+	public void setToLocation(String toLocation) {
+		this.toLocation = toLocation;
+	}
+	public LocalDateTime getFromDateTime() {
+		return fromDateTime;
+	}
+	public void setFromDateTime(LocalDateTime fromDateTime) {
+		this.fromDateTime = fromDateTime;
+	}
+	public LocalDateTime getToDateTime() {
+		return toDateTime;
+	}
+	public void setToDateTime(LocalDateTime toDateTime) {
+		this.toDateTime = toDateTime;
+	}
+	public boolean isStatus() {
+		return status;
+	}
+	public void setStatus(boolean status) {
+		this.status = status;
+	}
+	public double getDistanceInKm() {
+		return distanceInKm;
+	}
+	public void setDistanceInKm(double distanceInKm) {
+		this.distanceInKm = distanceInKm;
+	}
+	public double getBill() {
+		return bill;
+	}
+	public void setBill(double bill) {
+		this.bill = bill;
+	}
+	private double bill;
+
+}

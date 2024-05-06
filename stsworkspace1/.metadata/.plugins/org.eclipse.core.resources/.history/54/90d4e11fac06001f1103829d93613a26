@@ -1,0 +1,5 @@
+package com.abc.cabservice.repository;
+
+public class CabRepository {
+
+}

@@ -1,0 +1,75 @@
+package com.abc.tripbookingservice.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.abc.bookingservice.entity.Booking;
+import com.abc.tripbookingservice.entity.TripBooking;
+import com.abc.tripbookingservice.exception.ResourceNotFoundException;
+import com.abc.tripbookingservice.repository.TripBookingRepository;
+
+
+
+
+
+@Service
+public class BookingServiceImpl implements BookingService{
+	
+	@Autowired
+	private TripBookingRepository bookingrepository;
+	
+	
+
+	@Override
+	public List<TripBooking> getAllBookings() {
+		List<TripBooking> booking = bookingrepository.findAll();
+		return booking;
+	}
+	
+	@Override
+	public List<TripBooking> getAllBookingsByCustomer(int customerId) {
+		List<TripBooking> booking = bookingRepository.getAllBookingsByCustomer(customerId);
+		return booking;
+	}
+
+	@Override
+	public TripBooking SaveBooking(TripBooking bookingObj) {
+		TripBooking booking = bookingrepository.save(bookingObj);
+		return booking;
+	}
+	
+	@Override
+	public TripBooking getBookingById(int bookingId) {
+		Optional<TripBooking> optionalBooking = bookingrepository.findById(bookingId);
+		if (optionalBooking.isEmpty()) {
+			throw new ResourceNotFoundException("booking not existing with id: " +bookingId );
+		}
+		Booking booking = optionalBooking.get();
+		return booking;
+	}
+
+	@Override
+	public void updateDriver(int bookingId, TripBooking bookingObj) {
+		Optional<TripBooking> optionalBooking = bookingrepository.findById(bookingId);
+		if (optionalBooking.isEmpty()) {
+			throw new ResourceNotFoundException("booking not existing with id: " + bookingId);
+		}
+		bookingrepository.save(bookingObj);
+		return;
+	}
+		
+
+	@Override
+	public void deleteBooking(int bookingId) {
+		Optional<TripBooking> optionalBooking = bookingrepository.findById(bookingId);
+		if (optionalBooking.isEmpty()) {
+			throw new ResourceNotFoundException("customer not existing with id: " + bookingId);
+		}
+		TripBooking booking = optionalBooking.get();
+		bookingrepository.delete(booking);
+	}
+
+}

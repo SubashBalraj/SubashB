@@ -1,0 +1,11 @@
+package com.abc.customerservice.entity;
+
+import lombok.Data;
+
+@Data
+
+public class CustomerDto {
+	private Integer userId;
+	
+	private String password;
+}

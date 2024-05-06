@@ -1,0 +1,64 @@
+package com.abc.tripbookingservice.test;
+
+import com.abc.tripbookingservice.entity.TripBooking;
+import com.abc.tripbookingservice.exception.ResourceNotFoundException;
+import com.abc.tripbookingservice.repository.TripBookingRepository;
+import com.abc.tripbookingservice.service.TripBookingServiceImpl;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+public class TripBookingServiceTest {
+
+    @Mock
+    private TripBookingRepository tripBookingRepository;
+
+    @InjectMocks
+    private TripBookingServiceImpl tripBookingService;
+
+    @Test
+    public void testGetAllBookings() {
+        TripBooking booking1 = new TripBooking();
+        TripBooking booking2 = new TripBooking();
+        List<TripBooking> bookings = Arrays.asList(booking1, booking2);
+
+        when(tripBookingRepository.findAll()).thenReturn(bookings);
+
+        List<TripBooking> result = tripBookingService.getAllBookings();
+
+        assertEquals(2, result.size());
+    }
+
+    @Test
+    public void testGetBookingById() {
+        TripBooking booking = new TripBooking();
+        booking.setBookingID(1);
+
+        when(tripBookingRepository.findById(1)).thenReturn(Optional.of(booking));
+
+        TripBooking result = tripBookingService.getBookingById(1);
+
+        assertNotNull(result);
+        assertEquals(1, result.getBookingID());
+    }
+
+    @Test
+    public void testGetBookingById_BookingNotFound() {
+        when(tripBookingRepository.findById(1)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> tripBookingService.getBookingById(1));
+    }
+
+    
+}

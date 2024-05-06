@@ -1,0 +1,26 @@
+spring.application.name=apigatewayapp
+
+server.port=9090
+
+spring.cloud.gateway.routes[0].id=ADMINSERVICE
+spring.cloud.gateway.routes[0].uri=lb://ADMINSERVICE
+spring.cloud.gateway.routes[0].predicates[0]=Path=/admin/**
+
+spring.cloud.gateway.routes[1].id=CUSTOMERSERVICE
+spring.cloud.gateway.routes[1].uri=lb://CUSTOMERSERVICE
+spring.cloud.gateway.routes[1].predicates[0]=Path=/customer/**
+
+spring.cloud.gateway.routes[2].id=CABSERVICE
+spring.cloud.gateway.routes[2].uri=lb://CABSERVICE
+spring.cloud.gateway.routes[2].predicates[0]=Path=/cab/**
+
+spring.cloud.gateway.routes[3].id=DRIVERSERVICE
+spring.cloud.gateway.routes[3].uri=lb://DRIVERSERVICE
+spring.cloud.gateway.routes[3].predicates[0]=Path=/driver/**
+
+spring.cloud.gateway.routes[4].id=TRIPBOOKINGSERVICE
+spring.cloud.gateway.routes[4].uri=lb://TRIPBOOKINGSERVICE
+spring.cloud.gateway.routes[4].predicates[0]=Path=/tripbooking/**
+
+management.endpoints.web.exposure.include= *
+

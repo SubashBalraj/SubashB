@@ -1,0 +1,5 @@
+package com.abc.adminservice.repository;
+
+public class AdminRepository {
+
+}

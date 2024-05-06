@@ -1,0 +1,15 @@
+package com.abc.driverservice.exception;
+
+public class NotValidId extends RuntimeException {
+
+	public NotValidId() {
+		super();
+
+	}
+
+	public NotvalidId(String message) {
+		super(message);
+
+	}
+
+}

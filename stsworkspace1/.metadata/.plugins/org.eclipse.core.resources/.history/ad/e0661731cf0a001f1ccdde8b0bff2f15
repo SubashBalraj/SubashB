@@ -1,0 +1,91 @@
+package com.abc.tripbookingservice.test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+
+import com.abc.tripbookingservice.entity.TripBooking;
+import com.abc.tripbookingservice.exception.ResourceNotFoundException;
+import com.abc.tripbookingservice.repository.TripBookingRepository;
+import com.abc.tripbookingservice.service.TripBookingServiceImpl;
+
+public class TripBookingServiceTest {
+
+    @Mock
+    private TripBookingRepository tripBookingRepository;
+
+    @InjectMocks
+    private TripBookingServiceImpl tripBookingService;
+
+    @BeforeEach
+    void setUp() {
+        MockitoAnnotations.initMocks(this);
+    }
+
+    @Test
+    void testGetAllBookings() {
+        // Mock data
+        List<TripBooking> mockBookings = List.of(
+                createMockBooking(1, "Location A", "Location B"),
+                createMockBooking(2, "Location C", "Location D")
+        );
+        Mockito.when(tripBookingRepository.findAll()).thenReturn(mockBookings);
+
+        // Test
+        List<TripBooking> bookings = tripBookingService.getAllBookings();
+
+        // Assertion
+        assertNotNull(bookings);
+        assertEquals(2, bookings.size());
+    }
+
+    @Test
+    void testGetBookingById() {
+        // Mock data
+        int bookingId = 1;
+        TripBooking mockBooking = createMockBooking(bookingId, "Location A", "Location B");
+        Mockito.when(tripBookingRepository.findById(bookingId)).thenReturn(java.util.Optional.of(mockBooking));
+
+        // Test
+        TripBooking booking = tripBookingService.getBookingById(bookingId);
+
+        // Assertion
+        assertNotNull(booking);
+        assertEquals(bookingId, booking.getBookingID());
+    }
+
+    @Test
+    void testGetBookingById_NotFound() {
+        // Mock data
+        int bookingId = 1;
+        Mockito.when(tripBookingRepository.findById(bookingId)).thenReturn(java.util.Optional.empty());
+
+        // Test and Assertion
+        assertThrows(ResourceNotFoundException.class, () -> tripBookingService.getBookingById(bookingId));
+    }
+
+    // Add similar tests for other methods like createBooking, updateBooking, and deleteBooking
+
+    private TripBooking createMockBooking(int id, String fromLocation, String toLocation) {
+        TripBooking booking = new TripBooking();
+        booking.setBookingID(id);
+        booking.setFromLocation(fromLocation);
+        booking.setToLocation(toLocation);
+        booking.setFromDateTime(LocalDateTime.now());
+        booking.setToDateTime(LocalDateTime.now().plusHours(1));
+        booking.setStatus(true);
+        booking.setDistanceInKm(10.0);
+        booking.setBill(50.0);
+        return booking;
+    }
+}

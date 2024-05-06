@@ -1,0 +1,115 @@
+package com.abc.tripbookingservice.test;
+
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import com.abc.tripbookingservice.entity.TripBooking;
+import com.abc.tripbookingservice.exception.ResourceNotFoundException;
+import com.abc.tripbookingservice.repository.TripBookingRepository;
+import com.abc.tripbookingservice.service.TripBookingServiceImpl;
+
+
+public class TripBookingServiceTest {
+
+    @Mock
+    private TripBookingRepository tripBookingRepository;
+
+    @InjectMocks
+    private TripBookingServiceImpl tripBookingService;
+
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+    }
+
+    @Test
+    public void testGetAllBookings() {
+        List<TripBooking> bookings = new ArrayList<>();
+        bookings.add(new TripBooking(1, "John Doe"));
+        bookings.add(new TripBooking(2, "Jane Smith"));
+
+        when(tripBookingRepository.findAll()).thenReturn(bookings);
+
+        List<TripBooking> result = tripBookingService.getAllBookings();
+
+        assertEquals(2, result.size());
+    }
+
+    @Test
+    public void testGetBookingById() {
+        TripBooking booking = new TripBooking(1, "John Doe");
+
+        when(tripBookingRepository.findById(1)).thenReturn(Optional.of(booking));
+
+        TripBooking result = tripBookingService.getBookingById(1);
+
+        assertEquals(booking, result);
+    }
+
+    @Test
+    public void testGetBookingById_NotFound() {
+        when(tripBookingRepository.findById(1)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> tripBookingService.getBookingById(1));
+    }
+
+    @Test
+    public void testCreateBooking() {
+        TripBooking booking = new TripBooking(1, "John Doe");
+
+        when(tripBookingRepository.save(booking)).thenReturn(booking);
+
+        String result = tripBookingService.createBooking(booking);
+
+        assertEquals("Booking confirmed", result);
+    }
+
+    @Test
+    public void testUpdateBooking() {
+        TripBooking booking = new TripBooking(1, "John Doe");
+
+        when(tripBookingRepository.existsById(1)).thenReturn(true);
+        when(tripBookingRepository.save(booking)).thenReturn(booking);
+
+        TripBooking result = tripBookingService.updateBooking(1, booking);
+
+        assertEquals(booking, result);
+    }
+
+    @Test
+    public void testUpdateBooking_NotFound() {
+        TripBooking booking = new TripBooking(1, "John Doe");
+
+        when(tripBookingRepository.existsById(1)).thenReturn(false);
+
+        assertThrows(ResourceNotFoundException.class, () -> tripBookingService.updateBooking(1, booking));
+    }
+
+    @Test
+    public void testDeleteBooking() {
+        when(tripBookingRepository.existsById(1)).thenReturn(true);
+
+        String result = tripBookingService.deleteBooking(1);
+
+        assertEquals("Booking cancelled successfully", result);
+    }
+
+    @Test
+    public void testDeleteBooking_NotFound() {
+        when(tripBookingRepository.existsById(1)).thenReturn(false);
+
+        assertThrows(ResourceNotFoundException.class, () -> tripBookingService.deleteBooking(1));
+    }
+}

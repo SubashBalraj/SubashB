@@ -1,0 +1,14 @@
+package com.abc.customerservice.service;
+
+import java.util.List;
+
+import com.abc.customerservice.entity.Customer;
+
+public interface CustomerService {
+    Customer getCustomerById(int customerId);
+    List<Customer> getAllCustomers();
+    Customer addCustomer(Customer customer);
+    Customer updateCustomer(int customerId, Customer customer);
+    void deleteCustomer(int customerId);
+}
+

@@ -1,0 +1,19 @@
+package com.abc.customerservice.service;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import com.abc.customerservice.model.TripBooking;
+
+
+@FeignClient(name="TRIPBOOKING-BOOKING")
+public class CustomerServiceConsumer {
+	
+	@GetMapping("/Bookings{BookingId}")
+	public ResponseEntity<TripBooking> getBookingById(@PathVariable int bookingId) {
+		return null;
+	}
+}
+	

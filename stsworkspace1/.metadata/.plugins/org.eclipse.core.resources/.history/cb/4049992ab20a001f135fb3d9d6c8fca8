@@ -1,0 +1,71 @@
+package com.abc.driverservice.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.abc.driverservice.entity.Driver;
+import com.abc.driverservice.model.TripBookingDetails;
+import com.abc.driverservice.service.DriverService;
+
+import jakarta.validation.Valid;
+
+@RestController
+@RequestMapping("/driver")
+public class DriverController {
+	@Autowired
+	private DriverService driverService;
+
+	@PostMapping("/save")
+	public ResponseEntity<Driver> insertDriver(@Valid @RequestBody Driver driver) {
+		Driver addedDriver = driverService.insertDriver(driver);
+		return new ResponseEntity<Driver>(addedDriver, HttpStatus.CREATED);
+	}
+
+	@GetMapping("/{id}")
+	public ResponseEntity<Driver> viewDriverById(@PathVariable("id") int driverId) {
+		Driver driver = driverService.viewDriverById(driverId);
+		return new ResponseEntity<>(driver, HttpStatus.OK);
+	}
+
+	@GetMapping("/all")
+	public List<Driver> fetchAllDriver() {
+		List<Driver> customers = driverService.getAllDrivers();
+		return customers;
+	}
+
+	@PutMapping("{id}/update")
+	public ResponseEntity<Driver> updateDriver(@RequestBody Driver driver) {
+		driverService.updateDriver(driver);
+		ResponseEntity<Driver> responseEntity = new ResponseEntity<>(driver, HttpStatus.OK);
+		return responseEntity;
+	}
+
+	@DeleteMapping("/drivers/{id}")
+	public String deleteDriverById(@PathVariable("id") int driverId) {
+		return driverService.deleteDriverById(driverId);
+	}
+	
+	@GetMapping("/booking/details")
+    public ResponseEntity<List<TripBookingDetails>> getTripBookingDetails() {
+        return ResponseEntity.status(HttpStatus.OK).body(driverService.getTripBookingDetails());
+    }
+	
+	@GetMapping("/booking/details")
+    public ResponseEntity<List<TripBookingDetails>> getTripBookingDetailsById() {
+        return ResponseEntity.status(HttpStatus.OK).body(driverService.getTripBookingDetailsById());
+    }
+
+}
+
+

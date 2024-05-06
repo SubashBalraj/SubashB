@@ -1,0 +1,16 @@
+package com.abc.cabservice.service;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import com.abc.cabservice.model.Driver;
+import org.springframework.stereotype.Component;
+
+
+@FeignClient(name="DRIVER-SERVICE")
+public interface DriverServiceConsumer {
+
+	@GetMapping("/driver/{id}")
+	Driver getDriverDetails(@PathVariable("id") int driverId);
+}

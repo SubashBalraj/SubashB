@@ -1,0 +1,13 @@
+package com.abc.tripbookingservice;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class TripbookingServiceApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(TripbookingServiceApplication.class, args);
+	}
+
+}

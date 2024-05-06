@@ -1,0 +1,85 @@
+package com.abc.cabservice.service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.abc.cabservice.entity.Cab;
+import com.abc.cabservice.exception.ResourceNotFoundException;
+import com.abc.cabservice.model.CabResponse;
+import com.abc.cabservice.model.Driver;
+import com.abc.cabservice.repository.CabRepository;
+
+@Service
+public class CabServiceImpl implements CabService {
+	@Autowired
+	private CabRepository cabRepository;
+	
+	@Autowired
+	private DriverServiceConsumer driverService;
+
+	@Override
+	public Cab insertCab(Cab cab) {
+		return cabRepository.save(cab);
+	}
+
+	@Override
+	public Cab updateCab(Cab cab) throws ResourceNotFoundException {
+		Optional<Cab> optionalCab = cabRepository.findById(cab.getCabId());
+		if (optionalCab.isEmpty()) {
+			throw new ResourceNotFoundException("Cab not existing with id: " + cab.getCabId());
+		}
+		cabRepository.save(cab);
+		return cab;
+	}
+
+	@Override
+	public List<String> viewCabsOfType(String carType) throws ResourceNotFoundException {
+		List<String> cabs = cabRepository.viewCarType(carType);
+		return cabs;
+	}
+
+	@Override
+	public int countCabsOfType() throws ResourceNotFoundException {
+		List<Cab> totalCabs = cabRepository.findAll();
+		return totalCabs.size();
+	}
+
+	@Override
+	public void deleteCab(int cabId) {
+		Optional<Cab> optionalCab = cabRepository.findById(cabId);
+		if (optionalCab.isEmpty()) {
+			throw new ResourceNotFoundException("Cab not existing with id: " + cabId);
+
+		}
+		Cab cab = optionalCab.get();
+		cabRepository.delete(cab);
+	}
+
+	@Override
+	public List<CabResponse> getAllCabs() {
+		List<Cab> cabList = cabRepository.findAll();
+		List<CabResponse> cabResponseList = new ArrayList<>();
+		for (Cab cab : cabList) {
+			CabResponse cabResponse = new CabResponse();
+			cabResponse.setCabId(cab.getCabId());
+			cabResponse.setCarType(cab.getCarType());
+			cabResponse.setRatePerKm(cab.getRatePerKm());
+			cabResponse.setDriverId(cab.getDriverId());
+
+			int driverId = cab.getDriverId();
+			
+			Driver driver = driverService.getDriverDetails(driverId);
+
+			cabResponse.setDriver(driver);
+			cabResponseList.add(cabResponse);
+
+		}
+
+		return cabResponseList;
+	}
+
+}

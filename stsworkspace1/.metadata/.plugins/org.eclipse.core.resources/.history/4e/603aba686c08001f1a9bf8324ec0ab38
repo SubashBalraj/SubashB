@@ -1,0 +1,25 @@
+package com.abc.tripbookingservice.entity;
+
+import jakarta.persistence.Column;
+
+public class Customer {
+	
+	private int customerId;	
+	private String journeyStatus;
+	 
+	 
+	public int getCustomerId() {
+		return customerId;
+	}
+	public void setCustomerId(int customerId) {
+		this.customerId = customerId;
+	}
+	public String getJourneyStatus() {
+		return journeyStatus;
+	}
+	public void setJourneyStatus(String journeyStatus) {
+		this.journeyStatus = journeyStatus;
+	}
+
+
+}

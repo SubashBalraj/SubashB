@@ -1,0 +1,19 @@
+package com.abc.customerservice.entity;
+
+import jakarta.persistence.PrimaryKeyJoinColumn;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@PrimaryKeyJoinColumn(name="customerId")
+public class Customer extends AbstractUser {
+
+	
+	private boolean journey_status;
+	
+}

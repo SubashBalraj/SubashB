@@ -1,0 +1,12 @@
+spring.application.name=driver-service
+
+server.port= 9095
+
+spring.datasource.url = jdbc:mysql://localhost:3306/jdbc_db
+spring.datasource.username = c##j2ee
+spring.datasource.password = j2ee123
+
+
+spring.jpa.show-sql= true
+spring.jpa.hibernate.ddl-auto = update
+

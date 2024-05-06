@@ -1,0 +1,17 @@
+package com.abc.tripbookingservice.service;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import com.abc.tripbookingservice.model.Customer;
+
+@FeignClient(name="CUSTOMER_SERVICE")
+public class TripBookingConsumer {
+	
+	@GetMapping("/{customersId}")
+	Customer getCustomerById(@PathVariable int customerId) {
+		return customer;
+	}
+
+}

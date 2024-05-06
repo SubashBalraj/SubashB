@@ -1,0 +1,22 @@
+package com.abc.cabservice.service;
+
+import java.util.List;
+
+import com.abc.cabservice.entity.Cab;
+import com.abc.cabservice.exception.ResourceNotFoundException;
+
+
+public interface CabService {
+	
+	public Cab addCab(Cab cab);
+
+	public Cab updateCab(Cab cab) throws ResourceNotFoundException;
+	
+	public void deleteCab(int cabId) ;
+	
+	List<Cab> getAllCabs();
+
+	public List<String> viewCabsOfType(String carType) throws ResourceNotFoundException;
+
+	public int countCabsOfType() throws ResourceNotFoundException;
+}

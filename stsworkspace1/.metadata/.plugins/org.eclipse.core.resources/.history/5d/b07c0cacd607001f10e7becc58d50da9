@@ -1,0 +1,5 @@
+package com.abc.driverservice.entity;
+
+public class Address {
+
+}

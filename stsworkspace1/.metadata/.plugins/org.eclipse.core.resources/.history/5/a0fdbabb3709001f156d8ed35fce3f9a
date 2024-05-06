@@ -1,0 +1,18 @@
+package com.abc.tripbookingservice.service;
+
+import com.abc.tripbookingservice.entity.TripBooking;
+
+import java.util.List;
+
+public interface TripBookingService {
+	
+    List<TripBooking> getAllBookings();
+    
+    TripBooking getBookingById(int bookingId);
+    
+    TripBooking createBooking(TripBooking tripBooking);
+    
+    TripBooking updateBooking(int bookingId, TripBooking tripBooking);
+    
+    void deleteBooking(int bookingId);
+}

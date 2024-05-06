@@ -1,0 +1,45 @@
+package com.abc.cabservice.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.abc.cabservice.entity.Cab;
+import com.abc.cabservice.repository.CabRepository;
+
+@Service
+public class CabServiceImpl implements CabService {
+
+    @Autowired
+    private CabRepository cabRepository;
+
+    @Override
+    public Cab getCabById(Integer cabId) {
+        Optional<Cab> cabOptional = cabRepository.findById(cabId);
+        return cabOptional.orElse(null);
+    }
+
+    @Override
+    public List<Cab> getAllCabs() {
+        return cabRepository.findAll();
+    }
+
+    @Override
+    public Cab addCab(Cab cab) {
+        return cabRepository.save(cab);
+    }
+
+    @Override
+    public Cab updateCab(Integer cabId, Cab cab) {
+		return cab;
+        
+    }
+
+    @Override
+    public void deleteCab(Integer cabId) {
+        cabRepository.deleteById(cabId);
+    }
+}
+

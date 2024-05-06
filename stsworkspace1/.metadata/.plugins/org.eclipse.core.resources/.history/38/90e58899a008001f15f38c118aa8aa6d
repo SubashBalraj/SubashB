@@ -1,0 +1,52 @@
+package com.abc.tripbookingservice.controller;
+
+import com.abc.tripbookingservice.entity.TripBooking;
+import com.abc.tripbookingservice.service.TripBookingService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/bookings")
+public class TripBookingController {
+
+    @Autowired
+    private TripBookingService tripBookingService;
+
+    @GetMapping("/all")
+    public List<TripBooking> getAllBookings() {
+        return tripBookingService.getAllBookings();
+    }
+
+    @GetMapping("/{bookingId}")
+    public ResponseEntity<TripBooking> getBookingById(@PathVariable int bookingId) {
+        TripBooking booking = tripBookingService.getBookingById(bookingId);
+        if (booking != null) {
+            return new ResponseEntity<>(booking, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/save")
+    public ResponseEntity<TripBooking> createBooking(@RequestBody TripBooking tripBooking) {
+        TripBooking createdBooking = tripBookingService.createBooking(tripBooking);
+        return new ResponseEntity<>(createdBooking, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{bookingId}/update")
+    public ResponseEntity<TripBooking> updateBooking(@PathVariable int bookingId, @RequestBody TripBooking tripBooking) {
+        TripBooking updatedBooking = tripBookingService.updateBooking(bookingId, tripBooking);
+        return new ResponseEntity<>(updatedBooking, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{bookingId}/delete")
+    public ResponseEntity<Void> deleteBooking(@PathVariable int bookingId) {
+        tripBookingService.deleteBooking(bookingId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+}
+

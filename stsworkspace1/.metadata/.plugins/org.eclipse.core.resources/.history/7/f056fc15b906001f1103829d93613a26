@@ -1,0 +1,5 @@
+package com.abc.cabservice.controller;
+
+public class CustomerController {
+
+}

@@ -1,0 +1,10 @@
+package com.abc.cabservice.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.abc.cabservice.entity.Cab;
+
+public interface CabRepository extends JpaRepository<Cab, Integer> {
+    
+}
+

@@ -1,0 +1,21 @@
+package com.abc.driverservice.service;
+
+import java.util.List;
+
+import com.abc.driverservice.entity.Driver;
+import com.abc.driverservice.exception.DriverNotFoundException;
+import com.abc.driverservice.exception.InvalidId;
+
+public interface DriverService {
+	public Driver insertDriver(Driver driver);
+
+	public Driver viewDriverById(int driverId) throws InvalidId;
+	
+	List<Driver> getAllDrivers();
+
+	public Driver updateDriver(Driver driver) throws DriverNotFoundException;
+
+	public String deleteDriverById(int id) throws DriverNotFoundException;
+
+	public List<Driver> viewBestDriver() throws DriverNotFoundException;
+}

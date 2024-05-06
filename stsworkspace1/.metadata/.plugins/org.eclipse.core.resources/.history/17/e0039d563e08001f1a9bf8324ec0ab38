@@ -1,0 +1,5 @@
+package com.abc.tripbookingservice.repository;
+
+public class TripBookingRepository {
+
+}

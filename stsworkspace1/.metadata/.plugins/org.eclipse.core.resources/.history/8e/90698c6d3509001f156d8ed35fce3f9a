@@ -1,0 +1,125 @@
+package com.abc.customerservice.test;
+
+import com.abc.customerservice.entity.Customer;
+import com.abc.customerservice.exception.ResourceNotFoundException;
+import com.abc.customerservice.repository.CustomerRepository;
+import com.abc.customerservice.service.CustomerServiceImpl;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+public class CustomerServiceTest {
+
+    @Mock
+    private CustomerRepository customerRepository;
+
+    @InjectMocks
+    private CustomerServiceImpl customerService;
+
+    @Test
+    public void testGetAllCustomers() {
+        Customer customer1 = new Customer();
+        Customer customer2 = new Customer();
+        List<Customer> customers = Arrays.asList(customer1, customer2);
+
+        when(customerRepository.findAll()).thenReturn(customers);
+
+        List<Customer> result = customerService.getAllCustomers();
+
+        assertEquals(2, result.size());
+    }
+
+    @Test
+    public void testGetCustomerById() {
+        Customer customer = new Customer();
+        customer.setCustomerId(1);
+
+        when(customerRepository.findById(1)).thenReturn(Optional.of(customer));
+
+        Customer result = customerService.getCustomerById(1);
+
+        assertNotNull(result);
+        assertEquals(1, result.getCustomerId());
+    }
+
+    @Test
+    public void testGetCustomerById_CustomerNotFound() {
+        when(customerRepository.findById(1)).thenReturn(Optional.empty());
+
+        assertThrows(ResourceNotFoundException.class, () -> customerService.getCustomerById(1));
+    }
+
+    @Test
+    public void testCreateCustomer() {
+        Customer customer = new Customer();
+        customer.setName("John Doe");
+
+        when(customerRepository.save(customer)).thenReturn(customer);
+
+        Customer result = customerService.createCustomer(customer);
+
+        assertNotNull(result);
+        assertEquals("John Doe", result.getName());
+    }
+
+    @Test
+    public void testUpdateCustomer() {
+        Customer existingCustomer = new Customer();
+        existingCustomer.setCustomerId(1);
+        existingCustomer.setName("Existing Name");
+
+        Customer updatedCustomer = new Customer();
+        updatedCustomer.setCustomerId(1);
+        updatedCustomer.setName("Updated Name");
+
+        when(customerRepository.existsById(1)).thenReturn(true);
+        when(customerRepository.save(updatedCustomer)).thenReturn(updatedCustomer);
+
+        Customer result = customerService.updateCustomer(1, updatedCustomer);
+
+        assertNotNull(result);
+        assertEquals("Updated Name", result.getName());
+    }
+
+    @Test
+    public void testUpdateCustomer_CustomerNotFound() {
+        Customer updatedCustomer = new Customer();
+        updatedCustomer.setCustomerId(1);
+        updatedCustomer.setName("Updated Name");
+
+        when(customerRepository.existsById(1)).thenReturn(false);
+
+        assertThrows(ResourceNotFoundException.class, () -> customerService.updateCustomer(1, updatedCustomer));
+    }
+
+    @Test
+    public void testDeleteCustomer() {
+        Customer customer = new Customer();
+        customer.setCustomerId(1);
+        customer.setName("John Doe");
+
+        when(customerRepository.existsById(1)).thenReturn(true);
+
+        customerService.deleteCustomer(1);
+
+        verify(customerRepository, times(1)).deleteById(1);
+    }
+
+    @Test
+    public void testDeleteCustomer_CustomerNotFound() {
+        when(customerRepository.existsById(1)).thenReturn(false);
+
+        assertThrows(ResourceNotFoundException.class, () -> customerService.deleteCustomer(1));
+    }
+}

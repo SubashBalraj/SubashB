@@ -1,0 +1,68 @@
+package com.abc.driverservice.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.abc.driverservice.entity.Driver;
+import com.abc.driverservice.exception.NotValidId;
+import com.abc.driverservice.exception.ResourceNotFoundException;
+import com.abc.driverservice.repository.AddressRepository;
+import com.abc.driverservice.repository.DriverRepository;
+
+@Service
+public class DriverServiceImpl implements DriverService {
+
+	@Autowired
+	private DriverRepository driverRepository;
+
+	@Autowired
+	private AddressRepository addressRepository;
+
+	@Override
+	public Driver insertDriver(Driver driver) {
+		return driverRepository.save(driver);
+	}
+
+	@Override
+	public Driver viewDriverById(int driverId) throws NotValidId {
+		Optional<Driver> optionalDriver = driverRepository.findById(driverId);
+		if (optionalDriver.isEmpty()) {
+			throw new ResourceNotFoundException("No Driver found with id: " + driverId);
+
+		}
+		Driver driver = optionalDriver.get();
+		return driver;
+	}
+
+	@Override
+	public Driver updateDriver(Driver driver) throws ResourceNotFoundException {
+	    Optional<Driver> optionalDriver = driverRepository.findById(driver.getUserId());
+	    if (optionalDriver.isEmpty()) {
+	        throw new ResourceNotFoundException("No Driver found");
+	    }
+	    driverRepository.save(driver);
+	    return driver;
+	}
+
+
+
+	@Override
+	public String deleteDriverById(int id) throws ResourceNotFoundException {
+		Driver driver = driverRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No Driver found"));
+
+		addressRepository.delete(driver.getAddress());
+		driverRepository.delete(driver);
+
+		return "Driver Deleted successfully";
+	}
+
+	@Override
+	public List<Driver> getAllDrivers() {
+		List<Driver> drivers = driverRepository.findAll();
+		return drivers;
+	}
+
+}

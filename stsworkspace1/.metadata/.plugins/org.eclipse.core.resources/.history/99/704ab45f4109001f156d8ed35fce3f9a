@@ -1,0 +1,86 @@
+package com.abc.driverservice.test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import com.abc.driverservice.entity.Driver;
+import com.abc.driverservice.exception.ResourceNotFoundException;
+import com.abc.driverservice.repository.AddressRepository;
+import com.abc.driverservice.repository.DriverRepository;
+import com.abc.driverservice.service.DriverServiceImpl;
+
+@SpringBootTest(properties = "eureka.client.enabled=false")
+public class DriverServiceTest {
+
+    @InjectMocks
+    private DriverServiceImpl driverService;
+
+    @Mock
+    private DriverRepository driverRepository;
+
+    @Mock
+    private AddressRepository addressRepository;
+
+    @Test
+    public void testGetAllDrivers() {
+        Driver driver1 = new Driver();
+        driver1.setUserId(1);
+        driver1.setUsername("Ram");
+
+        Driver driver2 = new Driver();
+        driver2.setUserId(2);
+        driver2.setUsername("Ragu");
+
+        List<Driver> drivers = new ArrayList<>();
+        drivers.add(driver1);
+        drivers.add(driver2);
+
+        when(driverRepository.findAll()).thenReturn(drivers);
+
+        List<Driver> driverList = driverService.getAllDrivers();
+        assertEquals(2, driverList.size());
+    }
+
+    @Test
+    void testDeleteDriverById() {
+        Driver driver = new Driver();
+        driver.setUserId(1);
+        driver.setUsername("Ram");
+
+        when(driverRepository.findById(1)).thenReturn(Optional.of(driver));
+
+        doNothing().when(addressRepository).delete(driver.getAddress());
+        doNothing().when(driverRepository).delete(driver);
+
+        String result = driverService.deleteDriverById(1);
+        assertEquals("Driver Deleted successfully", result);
+
+        verify(driverRepository, times(1)).findById(1);
+        verify(addressRepository, times(1)).delete(driver.getAddress());
+        verify(driverRepository, times(1)).delete(driver);
+    }
+
+    @Test
+    void testDeleteDriverByIdWithException() {
+        when(driverRepository.findById(5)).thenThrow(new ResourceNotFoundException("No Driver found"));
+
+        assertThrows(ResourceNotFoundException.class, () -> driverService.deleteDriverById(5));
+
+        verify(addressRepository, times(0)).deleteById(5);
+        verify(driverRepository, times(0)).deleteById(5);
+    }
+}
+

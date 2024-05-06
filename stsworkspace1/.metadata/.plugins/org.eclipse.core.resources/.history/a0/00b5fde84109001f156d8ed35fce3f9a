@@ -1,0 +1,61 @@
+package com.abc.cabservice.test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import com.abc.cabservice.entity.Cab;
+import com.abc.cabservice.exception.ResourceNotFoundException;
+import com.abc.cabservice.repository.CabRepository;
+import com.abc.cabservice.service.CabServiceImpl;
+
+
+@SpringBootTest(properties = "eureka.client.enabled=false")
+public class CabServiceTest {
+
+    @InjectMocks
+    private CabServiceImpl cabService;
+
+    @Mock
+    CabRepository cabRepository;
+
+    @Test
+    void testDeleteCab() {
+        Cab cab = new Cab();
+        cab.setCabId(1);
+        cab.setCarType("SUV");
+        cab.setRatePerKm(10);
+        cab.setDriverId(101);
+
+        when(cabRepository.findById(1)).thenReturn(Optional.of(cab));
+
+        doNothing().when(cabRepository).delete(cab);
+
+        cabService.deleteCab(1);
+
+        verify(cabRepository, times(1)).findById(1);
+        verify(cabRepository, times(1)).delete(cab);
+    }
+
+    @Test
+    void testDeleteCabWithException() {
+        when(cabRepository.findById(5)).thenThrow(new ResourceNotFoundException("No cab existing with id: 5"));
+
+        assertThrows(ResourceNotFoundException.class, () -> cabService.deleteCab(5));
+
+        verify(cabRepository, times(0)).deleteById(5);
+    }
+}
+

@@ -1,0 +1,55 @@
+package com.abc.customerservice.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.abc.customerservice.entity.Customer;
+import com.abc.customerservice.exception.ResourceNotFoundException;
+import com.abc.customerservice.repository.CustomerRepository;
+
+@Service
+public class CustomerServiceImpl implements CustomerService {
+
+    @Autowired
+    private CustomerRepository customerRepository;
+
+    @Override
+    public Customer getCustomerById(int customerId) {
+        Optional<Customer> customerOptional = customerRepository.findById(customerId);
+        return customerOptional.orElseThrow(() -> new ResourceNotFoundException("Customer not found with ID: " + customerId));
+    }
+
+    @Override
+    public List<Customer> getAllCustomers() {
+        return customerRepository.findAll();
+    }
+
+    @Override
+    public Customer addCustomer(Customer customer) {
+        return customerRepository.save(customer);
+    }
+
+    @Override
+    public Customer updateCustomer(int customerId, Customer updatedCustomer) {
+        Optional<Customer> existingCustomerOptional = customerRepository.findById(customerId);
+        if (existingCustomerOptional.isPresent()) {
+            Customer existingCustomer = existingCustomerOptional.get();
+            existingCustomer.setJourneyStatus(updatedCustomer.getJourneyStatus());
+            return customerRepository.save(existingCustomer);
+        } else {
+            throw new ResourceNotFoundException("Customer not found with ID: " + customerId);
+        }
+    }
+
+    @Override
+    public void deleteCustomer(int customerId) {
+        if (customerRepository.existsById(customerId)) {
+            customerRepository.deleteById(customerId);
+        } else {
+            throw new ResourceNotFoundException("Customer not found with ID: " + customerId);
+        }
+    }
+}

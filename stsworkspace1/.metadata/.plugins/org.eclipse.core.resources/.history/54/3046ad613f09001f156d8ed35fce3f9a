@@ -1,0 +1,19 @@
+package com.abc.adminservice.service;
+
+import java.util.List;
+
+import com.abc.adminservice.entity.Admin;
+
+public interface AdminService {
+	
+    Admin getAdminById(int adminId);
+    
+    List<Admin> getAllAdmins();
+    
+    Admin addAdmin(Admin admin);
+    
+    Admin updateAdmin(int adminId, Admin updatedAdmin);
+    
+    void deleteAdmin(int adminId);
+}
+

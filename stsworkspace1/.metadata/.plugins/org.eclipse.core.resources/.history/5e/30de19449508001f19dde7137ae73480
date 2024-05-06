@@ -1,0 +1,44 @@
+package com.abc.tripbookingservice.service;
+
+import com.abc.tripbookingservice.entity.TripBooking;
+import com.abc.tripbookingservice.repository.TripBookingRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class TripBookingServiceImpl implements TripBookingService {
+
+    @Autowired
+    private TripBookingRepository tripBookingRepository;
+
+    @Override
+    public List<TripBooking> getAllBookings() {
+        return tripBookingRepository.findAll();
+    }
+
+    @Override
+    public TripBooking getBookingById(int bookingId) {
+        Optional<TripBooking> optionalBooking = tripBookingRepository.findById(bookingId);
+        return optionalBooking.orElse(null);
+    }
+
+    @Override
+    public TripBooking createBooking(TripBooking tripBooking) {
+        return tripBookingRepository.save(tripBooking);
+    }
+
+    @Override
+    public TripBooking updateBooking(int bookingId, TripBooking tripBooking) {
+        tripBooking.setBookingID(bookingId);
+        return tripBookingRepository.save(tripBooking);
+    }
+
+    @Override
+    public void deleteBooking(int bookingId) {
+        tripBookingRepository.deleteById(bookingId);
+    }
+}
+

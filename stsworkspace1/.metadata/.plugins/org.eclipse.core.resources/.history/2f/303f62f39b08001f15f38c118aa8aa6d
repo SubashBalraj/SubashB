@@ -1,0 +1,10 @@
+spring.application.name=admin-service
+
+server.port= 9092
+
+spring.datasource.url=jdbc:oracle:thin:@localhost:1521:XE
+spring.datasource.username=c##cabservice
+spring.datasource.password=cabservice123
+
+spring.jpa.show-sql=true
+spring.jpa.hibernate.ddl-auto=create
